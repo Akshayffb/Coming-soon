@@ -1,0 +1,8 @@
+# Ignore environment file
+.env
+
+# Ignore composer dependencies
+vendor/
+
+# Ignore images in the public/img directory
+public/img/
