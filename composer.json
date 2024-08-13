@@ -3,7 +3,8 @@
     "description": "A coming soon page for Spava, a student study solution platform.",
     "require": {
         "phpmailer/phpmailer": "^6.9",
-        "vlucas/phpdotenv": "^5.6"
+        "vlucas/phpdotenv": "^5.6",
+        "monolog/monolog": "^3.7"
     },
     "license": "MIT",
     "autoload": {

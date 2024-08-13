@@ -1,79 +1,78 @@
 <?php
 
-// Start the session with enhanced security
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+error_reporting(E_ERROR | E_WARNING | E_PARSE);
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/../logs/app.log');
+
 session_start([
   'cookie_secure' => true,
   'cookie_httponly' => true,
   'use_strict_mode' => true
 ]);
 
-// Rate limiting configuration
-$limit = 50; // Emails per hour
-$timeWindow = 3600; // 1 hour in seconds
+require_once '../vendor/autoload.php';
 
-// Reset submission count if the time window has passed
-if (!isset($_SESSION['last_submission']) || time() - $_SESSION['last_submission'] > $timeWindow) {
-  $_SESSION['submission_count'] = 0;
-}
-
-// Check rate limit
-if ($_SESSION['submission_count'] >= $limit) {
-  die('Rate limit exceeded. Please try again later.');
-}
-
-// Update submission count and timestamp
-$_SESSION['submission_count'] = ($_SESSION['submission_count'] ?? 0) + 1;
-$_SESSION['last_submission'] = time();
-
-// Load Composer autoload
-require '../vendor/autoload.php';
-
+use Akshayffb\Spava\RecaptchaVerifier;
 use Akshayffb\Spava\Mailer;
 use Dotenv\Dotenv;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
-// Initialize and load environment variables
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 
+$appEnv = $_ENV['APP_ENV'] ?? 'production';
+
+$log = new Logger('app');
+$logLevel = ($appEnv === 'development') ? Logger::DEBUG : Logger::WARNING;
+$log->pushHandler(new StreamHandler(__DIR__ . '/../logs/app.log', $logLevel));
+
+$recaptchaSecret = $_ENV['RECAPTCHA_SECRET'];
+$recaptchaVerifier = new RecaptchaVerifier($recaptchaSecret, $log);
 
 $message = '';
 $messageType = 'info';
 
-// Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  // CSRF Protection
   if ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-    die('Invalid CSRF token.');
-  }
-
-  // Validate and sanitize input
-  $name = htmlspecialchars(trim($_POST['name']));
-  $email = filter_var(trim($_POST['email']), FILTER_VALIDATE_EMAIL);
-  $summary = htmlspecialchars(trim($_POST['summary']));
-
-  // CAPTCHA Verification (reCAPTCHA v3)
-  $recaptchaSecret = getenv('RECAPTCHA_SECRET');
-  $recaptchaResponse = $_POST['g-recaptcha-response'];
-  $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=$recaptchaSecret&response=$recaptchaResponse");
-
-  $responseKeys = json_decode($response, true);
-
-  if (intval($responseKeys['success']) !== 1) {
-    die('CAPTCHA verification failed. Please try again.');
-  }
-
-
-  if (!$email) {
-    $message = 'Invalid email address.';
+    $log->warning('Invalid CSRF token.');
+    $message = 'Invalid CSRF token. Please try again.';
     $messageType = 'danger';
   } else {
-    try {
-      $mailer = new Mailer();
-      $message = $mailer->sendEmail($name, $email, $summary);
-      $messageType = 'success';
-    } catch (Exception $e) {
-      $message = "Message could not be sent. Mailer Error: {$e->getMessage()}";
+    $name = htmlspecialchars(trim($_POST['name']));
+    $email = filter_var(trim($_POST['email']), FILTER_VALIDATE_EMAIL);
+    $summary = htmlspecialchars(trim($_POST['summary']));
+
+    if (empty($name)) {
+      $message = 'Name is required.';
       $messageType = 'danger';
+    } elseif (!$email) {
+      $message = 'Invalid email address.';
+      $messageType = 'danger';
+    } else {
+      $recaptchaResponse = $_POST['g-recaptcha-response'];
+
+      if (!$recaptchaVerifier->verify($recaptchaResponse)) {
+        $log->warning('CAPTCHA verification failed.', [
+          'recaptcha_response' => $recaptchaResponse,
+          'recaptcha_secret' => $recaptchaSecret
+        ]);
+        $message = 'CAPTCHA verification failed. Please try again.';
+        $messageType = 'danger';
+      } else {
+        try {
+          $mailer = new Mailer($log);
+          $mailer->sendEmail($name, $email, $summary);
+          $message = 'Thank you for your submission! We will get back to you soon.';
+          $messageType = 'success';
+        } catch (Exception $e) {
+          $log->error("Mailer Error: {$e->getMessage()}");
+          $message = 'Message could not be sent. Please try again later.';
+          $messageType = 'danger';
+        }
+      }
     }
   }
 }
@@ -83,6 +82,7 @@ $token = bin2hex(random_bytes(32));
 $_SESSION['csrf_token'] = $token;
 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -97,10 +97,7 @@ $_SESSION['csrf_token'] = $token;
   <link rel="stylesheet" href="styles.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
-    async defer>
-  </script>
-  <script src="https://www.google.com/recaptcha/api.js?render=<?php echo htmlspecialchars(getenv('RECAPTCHA_SITE_KEY')); ?>"></script>
+  <script src="https://www.google.com/recaptcha/api.js?render=<?php echo htmlspecialchars($_ENV['RECAPTCHA_SITE_KEY']); ?>"></script>
 </head>
 
 <body>
@@ -119,9 +116,9 @@ $_SESSION['csrf_token'] = $token;
       <p>The countdown has begun. Sign up on the right for exclusive early access and stay ahead of the game!</p>
     </div>
     <div class="form-container">
-      <form method="post" id="waitlist">
+      <form method="post" id="waitlist" action="">
         <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($token); ?>">
-        <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+
         <div class="mb-3">
           <label for="nameInput" class="form-label">Name</label>
           <input type="text" class="form-control form-control-lg" id="nameInput" name="name" aria-describedby="nameHelp" required>
@@ -136,10 +133,9 @@ $_SESSION['csrf_token'] = $token;
         </div>
         <div class="d-flex">
           <button class="g-recaptcha btn btn-primary"
-            data-sitekey="<?php echo htmlspecialchars(getenv('RECAPTCHA_SITE_KEY')); ?>"
+            data-sitekey="<?php echo htmlspecialchars($_ENV['RECAPTCHA_SITE_KEY']); ?>"
             data-callback='onSubmit'
             data-action='submit'>Notify me</button>
-
         </div>
       </form>
     </div>
@@ -147,7 +143,6 @@ $_SESSION['csrf_token'] = $token;
   <div class="container footer">
     <p>© 2024 Spava. All rights reserved.</p>
   </div>
-
   <!-- Toasts -->
   <?php if ($message): ?>
     <div class="position-fixed top-0 end-0 p-3" style="z-index: 11">
@@ -161,17 +156,12 @@ $_SESSION['csrf_token'] = $token;
       </div>
     </div>
   <?php endif; ?>
-
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const toastElList = document.querySelectorAll('.toast');
       const toastList = [...toastElList].map(toastEl => new bootstrap.Toast(toastEl));
       toastList.forEach(toast => toast.show());
     });
-
-    let onloadCallback = function() {
-      console.log("grecaptcha is ready!");
-    };
 
     function onSubmit(token) {
       document.getElementById('g-recaptcha-response').value = token;
