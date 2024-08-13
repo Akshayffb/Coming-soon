@@ -34,5 +34,5 @@ To get started with this project locally, follow these steps:
 3. **Run the app**:
 
    ```sh
-   php -S localhost:8000 public
+   php -S localhost:8000 -t public
    ```
