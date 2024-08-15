@@ -98,7 +98,7 @@ class Mailer
             // Email to the admin
             $this->mail->clearAddresses();
             $this->mail->addAddress($_ENV['ADMIN_EMAIL']);
-            $this->mail->Subject = " {$name} - New Waitlist Submission";
+            $this->mail->Subject = "{$name} - New Waitlist Submission";
             $this->mail->Body    = "
                 <html>
                 <head>

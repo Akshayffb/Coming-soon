@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [2024-08-14T06:25:15.185967+05:30] app.WARNING: CAPTCHA verification failed. {"recaptcha_response":"","recaptcha_secret":"6LcnWCUqAAAAAAamzd3RHqFq90xkjWdZORG7VoIO"} []
 [Wed Aug 14 15:17:00.421857 2024] [php:error] [pid 268179] [client 91.92.242.21:54655] script '/var/www/html/public/simple.php' not found or unable to stat
 [Wed Aug 14 15:17:25.038708 2024] [php:error] [pid 261240] [client 91.92.242.21:63702] script '/var/www/html/public/mah.php' not found or unable to stat
@@ -26,3 +27,17 @@
 [2024-08-15T22:25:56.297515+05:30] app.WARNING: Rate limit exceeded. [] []
 [2024-08-15T22:46:13.529077+05:30] app.WARNING: Rate limit exceeded. [] []
 [2024-08-15T22:46:15.041556+05:30] app.WARNING: Rate limit exceeded. [] []
+=======
+[2024-08-15T16:48:32.864867+02:00] app.WARNING: Rate limit exceeded. [] []
+[2024-08-15T16:48:35.237789+02:00] app.WARNING: Rate limit exceeded. [] []
+[2024-08-15T16:49:10.920547+02:00] app.WARNING: Rate limit exceeded. [] []
+[2024-08-15T16:49:22.689018+02:00] app.WARNING: Rate limit exceeded. [] []
+[2024-08-15T16:54:07.192940+02:00] app.WARNING: Rate limit exceeded. [] []
+[2024-08-15T16:54:09.992148+02:00] app.WARNING: Rate limit exceeded. [] []
+[2024-08-15T16:54:11.675560+02:00] app.WARNING: Rate limit exceeded. [] []
+[15-Aug-2024 17:31:50 Europe/Berlin] PHP Warning:  require_once(../vendor/autoload.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\spava\public\index.php on line 15
+[15-Aug-2024 17:31:50 Europe/Berlin] PHP Fatal error:  Cannot redeclare containsSuspiciousContent() (previously declared in C:\xampp\htdocs\spava\public\index.php:112) in C:\xampp\htdocs\spava\public\index.php on line 131
+[2024-08-15T17:37:43.836855+02:00] app.WARNING: Invalid CSRF token. [] []
+[2024-08-15T17:41:15.026041+02:00] app.WARNING: Invalid CSRF token. [] []
+[2024-08-15T17:41:37.458769+02:00] app.WARNING: Rate limit exceeded. [] []
+>>>>>>> main
