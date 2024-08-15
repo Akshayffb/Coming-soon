@@ -1,0 +1,12 @@
+[2024-08-15T16:48:32.864867+02:00] app.WARNING: Rate limit exceeded. [] []
+[2024-08-15T16:48:35.237789+02:00] app.WARNING: Rate limit exceeded. [] []
+[2024-08-15T16:49:10.920547+02:00] app.WARNING: Rate limit exceeded. [] []
+[2024-08-15T16:49:22.689018+02:00] app.WARNING: Rate limit exceeded. [] []
+[2024-08-15T16:54:07.192940+02:00] app.WARNING: Rate limit exceeded. [] []
+[2024-08-15T16:54:09.992148+02:00] app.WARNING: Rate limit exceeded. [] []
+[2024-08-15T16:54:11.675560+02:00] app.WARNING: Rate limit exceeded. [] []
+[15-Aug-2024 17:31:50 Europe/Berlin] PHP Warning:  require_once(../vendor/autoload.php): Failed to open stream: No such file or directory in C:\xampp\htdocs\spava\public\index.php on line 15
+[15-Aug-2024 17:31:50 Europe/Berlin] PHP Fatal error:  Cannot redeclare containsSuspiciousContent() (previously declared in C:\xampp\htdocs\spava\public\index.php:112) in C:\xampp\htdocs\spava\public\index.php on line 131
+[2024-08-15T17:37:43.836855+02:00] app.WARNING: Invalid CSRF token. [] []
+[2024-08-15T17:41:15.026041+02:00] app.WARNING: Invalid CSRF token. [] []
+[2024-08-15T17:41:37.458769+02:00] app.WARNING: Rate limit exceeded. [] []
