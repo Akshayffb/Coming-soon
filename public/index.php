@@ -29,48 +29,76 @@ $log = new Logger('app');
 $logLevel = ($appEnv === 'development') ? Logger::DEBUG : Logger::WARNING;
 $log->pushHandler(new StreamHandler(__DIR__ . '/../logs/app.log', $logLevel));
 
-$recaptchaSecret = $_ENV['RECAPTCHA_SECRET'];
-$recaptchaVerifier = new RecaptchaVerifier($recaptchaSecret, $log);
+$limit = 5;
+$timeWindow = 3600;
 
-$message = '';
-$messageType = 'info';
+if (!isset($_SESSION['submission_count'])) {
+  $_SESSION['submission_count'] = 0;
+}
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  if ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
-    $log->warning('Invalid CSRF token.');
-    $message = 'Invalid CSRF token. Please try again.';
-    $messageType = 'danger';
-  } else {
-    $name = htmlspecialchars(trim($_POST['name']));
-    $email = filter_var(trim($_POST['email']), FILTER_VALIDATE_EMAIL);
-    $summary = htmlspecialchars(trim($_POST['summary']));
+if (!isset($_SESSION['last_submission']) || time() - $_SESSION['last_submission'] > $timeWindow) {
+  $_SESSION['submission_count'] = 0;
+  $_SESSION['last_submission'] = time();
+}
 
-    if (empty($name)) {
-      $message = 'Name is required.';
+if ($_SESSION['submission_count'] >= $limit) {
+  $log->warning('Rate limit exceeded.');
+  $message = 'Rate limit exceeded. Please try again later.';
+  $messageType = 'danger';
+} else {
+  $_SESSION['submission_count'] = ($_SESSION['submission_count'] ?? 0) + 1;
+  $_SESSION['last_submission'] = time();
+
+  $recaptchaSecret = $_ENV['RECAPTCHA_SECRET'];
+  $recaptchaVerifier = new RecaptchaVerifier($recaptchaSecret, $log);
+
+  $message = '';
+  $messageType = 'info';
+
+  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!empty($_POST['honeypot'])) {
+      $log->warning('Honeypot field filled.');
+      $message = 'Spam detected. Your submission could not be processed.';
       $messageType = 'danger';
-    } elseif (!$email) {
-      $message = 'Invalid email address.';
+    } elseif ($_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+      $log->warning('Invalid CSRF token.');
+      $message = 'Invalid CSRF token. Please try again.';
       $messageType = 'danger';
     } else {
-      $recaptchaResponse = $_POST['g-recaptcha-response'];
+      $name = htmlspecialchars(trim($_POST['name']));
+      $email = filter_var(trim($_POST['email']), FILTER_VALIDATE_EMAIL);
+      $summary = htmlspecialchars(trim($_POST['summary']));
 
-      if (!$recaptchaVerifier->verify($recaptchaResponse)) {
-        $log->warning('CAPTCHA verification failed.', [
-          'recaptcha_response' => $recaptchaResponse,
-          'recaptcha_secret' => $recaptchaSecret
-        ]);
-        $message = 'CAPTCHA verification failed. Please try again.';
+      if (empty($name)) {
+        $message = 'Please enter your name.';
+        $messageType = 'danger';
+      } elseif (!$email) {
+        $message = 'Please enter your email address.';
+        $messageType = 'danger';
+      } elseif (containsSuspiciousContent($summary)) {
+        $message = 'Suspicious content detected. Please remove any promotional material or HTML tags.';
         $messageType = 'danger';
       } else {
-        try {
-          $mailer = new Mailer($log);
-          $mailer->sendEmail($name, $email, $summary);
-          $message = 'Thank you for your submission! We will get back to you soon.';
-          $messageType = 'success';
-        } catch (Exception $e) {
-          $log->error("Mailer Error: {$e->getMessage()}");
-          $message = 'Message could not be sent. Please try again later.';
+        $recaptchaResponse = $_POST['g-recaptcha-response'];
+
+        if (!$recaptchaVerifier->verify($recaptchaResponse)) {
+          $log->warning('CAPTCHA verification failed.', [
+            'recaptcha_response' => $recaptchaResponse,
+            'recaptcha_secret' => $recaptchaSecret
+          ]);
+          $message = 'CAPTCHA verification failed. Please try again.';
           $messageType = 'danger';
+        } else {
+          try {
+            $mailer = new Mailer($log);
+            $mailer->sendEmail($name, $email, $summary);
+            $message = 'Thank you for joining the waitlist! We’ll keep you updated as we get closer to our launch.';
+            $messageType = 'success';
+          } catch (Exception $e) {
+            $log->error("Mailer Error: {$e->getMessage()}");
+            $message = 'Message could not be sent. Please try again later.';
+            $messageType = 'danger';
+          }
         }
       }
     }
@@ -80,6 +108,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Generate a new CSRF token for the form
 $token = bin2hex(random_bytes(32));
 $_SESSION['csrf_token'] = $token;
+
+function containsSuspiciousContent($text)
+{
+  $bannedWords = ['buy', 'discount', 'free', 'click', 'visit', 'apply'];
+  foreach ($bannedWords as $word) {
+    if (stripos($text, $word) !== false) {
+      return true;
+    }
+  }
+
+  $patterns = [
+    '/<script\b[^>]*>(.*?)<\/script>/is',
+    '/<[^>]+>/i'
+  ];
+  foreach ($patterns as $pattern) {
+    if (preg_match($pattern, $text)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 
 ?>
 
@@ -118,6 +169,7 @@ $_SESSION['csrf_token'] = $token;
     <div class="form-container">
       <form method="post" id="waitlist" action="">
         <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($token); ?>">
+        <input type="text" name="honeypot" style="display:none;">
 
         <div class="mb-3">
           <label for="nameInput" class="form-label">Name</label>
