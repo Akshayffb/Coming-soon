@@ -29,7 +29,7 @@ $log = new Logger('app');
 $logLevel = ($appEnv === 'development') ? Logger::DEBUG : Logger::WARNING;
 $log->pushHandler(new StreamHandler(__DIR__ . '/../logs/app.log', $logLevel));
 
-$limit = 5;
+$limit = 10;
 $timeWindow = 3600;
 
 if (!isset($_SESSION['submission_count'])) {
