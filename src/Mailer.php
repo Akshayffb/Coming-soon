@@ -86,7 +86,7 @@ class Mailer
                     <p>Best regards,<br>Team Spava</p>
                     </div>
                         <div class='footer'>
-                            <p>© 2024 Spava. All rights reserved.</p>
+                            <p>Copyright 2024 Spava. All rights reserved.</p>
                         </div>
                     </div>
                 </body>
@@ -98,7 +98,7 @@ class Mailer
             // Email to the admin
             $this->mail->clearAddresses();
             $this->mail->addAddress($_ENV['ADMIN_EMAIL']);
-            $this->mail->Subject = 'New Waitlist Submission';
+            $this->mail->Subject = " {$name} - New Waitlist Submission";
             $this->mail->Body    = "
                 <html>
                 <head>
@@ -142,7 +142,7 @@ class Mailer
                             <p><strong>Additional Note:</strong> $summary</p>
                         </div>
                         <div class='footer'>
-                            <p>© 2024 Spava. All rights reserved.</p>
+                            <p>Copyright 2024 Spava. All rights reserved.</p>
                         </div>
                     </div>
                 </body>

@@ -1,0 +1,26 @@
+[2024-08-14T06:25:15.185967+05:30] app.WARNING: CAPTCHA verification failed. {"recaptcha_response":"","recaptcha_secret":"6LcnWCUqAAAAAAamzd3RHqFq90xkjWdZORG7VoIO"} []
+[Wed Aug 14 15:17:00.421857 2024] [php:error] [pid 268179] [client 91.92.242.21:54655] script '/var/www/html/public/simple.php' not found or unable to stat
+[Wed Aug 14 15:17:25.038708 2024] [php:error] [pid 261240] [client 91.92.242.21:63702] script '/var/www/html/public/mah.php' not found or unable to stat
+[Wed Aug 14 15:17:56.626262 2024] [php:error] [pid 261294] [client 91.92.242.21:57463] script '/var/www/html/public/about.php' not found or unable to stat
+[2024-08-14T19:52:26.826583+05:30] app.WARNING: CAPTCHA verification failed. {"recaptcha_response":"","recaptcha_secret":"6LcnWCUqAAAAAAamzd3RHqFq90xkjWdZORG7VoIO"} []
+[2024-08-14T20:12:46.767063+05:30] app.WARNING: CAPTCHA verification failed. {"recaptcha_response":"","recaptcha_secret":"6LcnWCUqAAAAAAamzd3RHqFq90xkjWdZORG7VoIO"} []
+[Wed Aug 14 22:04:19.269024 2024] [php:error] [pid 261240] [client 152.32.234.39:39884] script '/var/www/html/public/index_sso.php' not found or unable to stat
+[2024-08-15T07:57:04.186351+05:30] app.WARNING: CAPTCHA verification failed. {"recaptcha_response":"","recaptcha_secret":"6LcnWCUqAAAAAAamzd3RHqFq90xkjWdZORG7VoIO"} []
+[2024-08-15T15:36:36.941754+05:30] app.WARNING: CAPTCHA verification failed. {"recaptcha_response":"","recaptcha_secret":"6LcnWCUqAAAAAAamzd3RHqFq90xkjWdZORG7VoIO"} []
+[2024-08-15T16:08:41.095802+05:30] app.WARNING: CAPTCHA verification failed. {"recaptcha_response":"","recaptcha_secret":"6LcnWCUqAAAAAAamzd3RHqFq90xkjWdZORG7VoIO"} []
+[Thu Aug 15 19:52:49.235967 2024] [php:error] [pid 276683] [client 91.92.242.152:52053] script '/var/www/html/public/chosen.php' not found or unable to stat
+[Thu Aug 15 19:53:16.034802 2024] [php:error] [pid 276682] [client 91.92.242.152:54358] script '/var/www/html/public/dropdown.php' not found or unable to stat
+[Thu Aug 15 19:53:53.206179 2024] [php:error] [pid 276694] [client 91.92.242.152:53722] script '/var/www/html/public/link.php' not found or unable to stat
+[Thu Aug 15 19:54:31.223431 2024] [php:error] [pid 282880] [client 91.92.242.152:49315] script '/var/www/html/public/classwithtostring.php' not found or unable to stat
+[Thu Aug 15 19:55:03.781048 2024] [php:error] [pid 276686] [client 91.92.242.152:57898] script '/var/www/html/public/edit.php' not found or unable to stat
+[2024-08-15T22:04:57.766569+05:30] app.WARNING: CAPTCHA verification failed. {"recaptcha_response":"","recaptcha_secret":"6LcnWCUqAAAAAAamzd3RHqFq90xkjWdZORG7VoIO"} []
+[2024-08-15T22:21:53.358740+05:30] app.WARNING: Rate limit exceeded. [] []
+[2024-08-15T22:22:22.850001+05:30] app.WARNING: Rate limit exceeded. [] []
+[2024-08-15T22:24:11.294937+05:30] app.WARNING: Rate limit exceeded. [] []
+[2024-08-15T22:24:16.459114+05:30] app.WARNING: Rate limit exceeded. [] []
+[2024-08-15T22:24:18.717039+05:30] app.WARNING: Rate limit exceeded. [] []
+[2024-08-15T22:24:20.025641+05:30] app.WARNING: Rate limit exceeded. [] []
+[2024-08-15T22:24:21.160234+05:30] app.WARNING: Rate limit exceeded. [] []
+[2024-08-15T22:24:22.288577+05:30] app.WARNING: Rate limit exceeded. [] []
+[2024-08-15T22:24:23.363664+05:30] app.WARNING: Rate limit exceeded. [] []
+[2024-08-15T22:25:56.297515+05:30] app.WARNING: Rate limit exceeded. [] []
