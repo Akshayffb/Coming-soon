@@ -33,6 +33,17 @@ class Mailer
 
     public function sendEmail($name, $email, $summary)
     {
+
+        $trustedDomains = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com',];
+
+        $emailDomain = substr(strrchr($email, "@"), 1);
+        $userIp = $_SERVER['REMOTE_ADDR'];
+
+        if (!in_array($emailDomain, $trustedDomains)) {
+            $this->log->warning("Submission from untrusted email domain: $emailDomain", ['IP' => $userIp, 'Email' => $email,]);
+            throw new \Exception("Untrusted email domain. Please use a trusted email provider.");
+        }
+
         try {
             // Email to the recipient
             $this->mail->setFrom($_ENV['MAIL_FROM_ADDRESS'], $_ENV['MAIL_FROM_NAME']);
