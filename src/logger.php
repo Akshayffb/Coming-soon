@@ -11,10 +11,12 @@ $appEnv = $_ENV['APP_ENV'] ?? 'production';
 
 $log = new Logger('app');
 
+$logFilePath = '../var/log/spava.in_error.log';
+
 if ($appEnv === 'development') {
-  $log->pushHandler(new StreamHandler(__DIR__ . '/../logs/app.log', Logger::DEBUG));
+  $log->pushHandler(new StreamHandler($logFilePath, Logger::DEBUG));
 } else {
-  $log->pushHandler(new StreamHandler(__DIR__ . '/../logs/app.log', Logger::WARNING));
+  $log->pushHandler(new StreamHandler($logFilePath, Logger::WARNING));
 }
 
 return $log;

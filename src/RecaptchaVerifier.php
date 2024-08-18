@@ -23,7 +23,9 @@ class RecaptchaVerifier
     // Determine log level based on environment
     $logLevel = ($_ENV['APP_ENV'] === 'production') ? Logger::ERROR : Logger::DEBUG;
 
-    $logger->pushHandler(new StreamHandler(__DIR__ . '/../logs/app.log', $logLevel));
+    $logFilePath = '../var/log/spava.in_error.log';
+
+    $logger->pushHandler(new StreamHandler($logFilePath, $logLevel));
     return $logger;
   }
 
