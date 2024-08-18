@@ -4,4 +4,8 @@
 # Ignore composer dependencies
 vendor/
 
+<<<<<<< HEAD
 /logs
+=======
+/var
+>>>>>>> production

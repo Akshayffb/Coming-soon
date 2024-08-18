@@ -4,7 +4,7 @@ ini_set('display_errors', 0);
 ini_set('display_startup_errors', 0);
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 ini_set('log_errors', 1);
-ini_set('error_log', __DIR__ . '/../logs/app.log');
+ini_set('error_log', '../var/log/spava.in_error.log');
 
 session_start([
   'cookie_secure' => true,
@@ -27,7 +27,7 @@ $appEnv = $_ENV['APP_ENV'] ?? 'production';
 
 $log = new Logger('app');
 $logLevel = ($appEnv === 'development') ? Logger::DEBUG : Logger::WARNING;
-$log->pushHandler(new StreamHandler(__DIR__ . '/../logs/app.log', $logLevel));
+$log->pushHandler(new StreamHandler('../var/log/spava.in_error.log', $logLevel));
 
 $limit = 10;
 $timeWindow = 3600;
