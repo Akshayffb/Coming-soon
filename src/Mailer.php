@@ -49,116 +49,183 @@ class Mailer
             $this->mail->setFrom($_ENV['MAIL_FROM_ADDRESS'], $_ENV['MAIL_FROM_NAME']);
             $this->mail->addAddress($email);
             $this->mail->isHTML(true);
-            $this->mail->Subject = 'Thank you for joining the waitlist!';
-            $this->mail->Body    = "
-                <html>
-                <head>
-                    <style>
-                        .email-container {
-                            font-family: Arial, sans-serif;
-                            padding: 20px;
-                            border: 1px solid #ddd;
-                            border-radius: 4px;
-                            max-width: 600px;
-                            margin: 0 auto;
-                            background-color: #f9f9f9;
-                        }
-                        .header {
-                            color: #fff;
-                            padding: 10px 20px 0px 20px;
-                        }
-                        .content {
-                            padding: 20px;
-                        }
-                        .footer {
-                            text-align: center;
-                            padding: 10px;
-                            background-color: #eee;
-                            border-radius: 0 0 4px 4px;
-                        }
-                        h1 {
-                            color: #007bff;
-                            margin: 0px;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class='email-container'>
-                          <div class='header'>
-                        <h1>You're on the Waitlist!</h1>
-                    </div>
-                    <div class='content'>
-                        <p>Hello $name,</p>
-                        <p>Thank you for joining the waitlist for Spava! We're thrilled to have you on board and can't wait to introduce you to our all-in-one student study solution.</p>
-                        <p>Here's a quick summary of your submission:</p>
-                        <p><strong>Additional Note:</strong> $summary</p>
-                        <p>We'll keep you updated with all the exciting developments as we approach our launch. Stay tuned for more information!</p>
-
-                    <p>Best regards,<br>Team Spava</p>
-                    </div>
-                        <div class='footer'>
-                            <p>Copyright 2024 Spava. All rights reserved.</p>
-                        </div>
-                    </div>
-                </body>
-                </html>
-            ";
+            $this->mail->Subject = "Welcome to Spava – You're Officially on the List";
+            $this->mail->CharSet = 'UTF-8';
+            $this->mail->Body    = '
+                <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      margin: 0;
+      background: #f1f5f9;
+      font-family: "Segoe UI", sans-serif;
+    }
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background: #ffffff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+    .header {
+      background: #4f46e5;
+      color: #ffffff;
+      padding: 30px 40px;
+      text-align: center;
+    }
+    .header img {
+      max-width: 120px;
+      margin-bottom: 10px;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    .body {
+      padding: 30px 40px;
+      color: #334155;
+    }
+    .body h2 {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+    .body p {
+      line-height: 1.6;
+    }
+    .cta {
+      margin-top: 30px;
+      text-align: center;
+    }
+    .cta a {
+      background: #4f46e5;
+      color: #ffffff;
+      padding: 12px 24px;
+      border-radius: 8px;
+      text-decoration: none;
+      display: inline-block;
+      font-weight: 600;
+    }
+    .footer {
+      padding: 20px 40px;
+      font-size: 13px;
+      text-align: center;
+      color: #94a3b8;
+      background: #f8fafc;
+    }
+    @media (max-width: 600px) {
+      .body, .footer, .header {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <!-- Optional logo -->
+      <!-- <img src=\"https://yourdomain.com/logo.png\" alt=\"Logo\"> -->
+      <h1>You\'re on the List! 🎉</h1>
+    </div>
+    <div class="body">
+      <h2>Hello ' . htmlspecialchars($name) . ',</h2>
+      <p>Thank you for signing up for early access to <strong>Spava</strong>! We\'re thrilled to have you with us.</p>
+      <p>As we prepare for launch, we\'ll keep you updated with all the exciting developments.</p>
+      <div class="cta">
+        <a href="https://spava.in">Visit Website</a>
+      </div>
+    </div>
+    <div class="footer">
+      You received this email because you joined the waitlist.<br>
+      &copy; 2025 Spava. All rights reserved.
+    </div>
+  </div>
+</body>
+</html>
+            ';
 
             $this->mail->send();
 
             // Email to the admin
             $this->mail->clearAddresses();
             $this->mail->addAddress($_ENV['ADMIN_EMAIL']);
-            $this->mail->Subject = "{$name} - New Waitlist Submission";
-            $this->mail->Body    = "
-                <html>
-                <head>
-                    <style>
-                        .email-container {
-                            font-family: Arial, sans-serif;
-                            padding: 20px;
-                            border: 1px solid #ddd;
-                            border-radius: 4px;
-                            max-width: 600px;
-                            margin: 0 auto;
-                            background-color: #f9f9f9;
-                        }
-                        .header {
-                            color: #fff;
-                            padding: 10px 20px 0px 20px;
-                        }
-                        .content {
-                            padding: 20px;
-                        }
-                        .footer {
-                            text-align: center;
-                            padding: 10px;
-                            background-color: #eee;
-                            border-radius: 0 0 4px 4px;
-                        }
-                        h1 {
-                            color: #007bff;
-                            margin: 0px;
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class='email-container'>
-                        <div class='header'>
-                        <h1>New Waitlist Submission</h1>
-                        </div>
-                        <div class='content'>
-                            <p><strong>Name:</strong> $name</p>
-                            <p><strong>Email:</strong> $email</p>
-                            <p><strong>Additional Note:</strong> $summary</p>
-                        </div>
-                        <div class='footer'>
-                            <p>Copyright 2024 Spava. All rights reserved.</p>
-                        </div>
-                    </div>
-                </body>
-                </html>
-            ";
+            $this->mail->Subject = "Heads Up! {$name} Just Joined Your Waitlist";
+            $this->mail->CharSet = 'UTF-8';
+            $this->mail->Body = <<<HTML
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <style>
+      body {
+        margin: 0;
+        background: #f1f5f9;
+        font-family: 'Segoe UI', sans-serif;
+      }
+      .container {
+        max-width: 600px;
+        margin: 40px auto;
+        background: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      }
+      .header {
+        background: #4f46e5;
+        color: #ffffff;
+        padding: 30px 40px;
+        text-align: center;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 24px;
+      }
+      .body {
+        padding: 30px 40px;
+        color: #334155;
+      }
+      .body h2 {
+        font-size: 20px;
+        margin-bottom: 15px;
+      }
+      .body p {
+        line-height: 1.6;
+        margin: 10px 0;
+      }
+      .footer {
+        padding: 20px 40px;
+        font-size: 13px;
+        text-align: center;
+        color: #94a3b8;
+        background: #f8fafc;
+      }
+      @media (max-width: 600px) {
+        .body, .footer, .header {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>New Waitlist Signup</h1>
+      </div>
+      <div class="body">
+        <h2>New Entry Details:</h2>
+        <p><strong>Name:</strong> {$name}</p>
+        <p><strong>Email:</strong> {$email}</p>
+        <p><strong>Summary:</strong><br>{$summary}</p>
+      </div>
+      <div class="footer">
+        This notification was triggered by a new waitlist signup.<br>
+        © 2025 Spava. All rights reserved.
+      </div>
+    </div>
+  </body>
+</html>
+HTML;
 
             $this->mail->send();
             return 'You have successfully joined the waitlist. Thank you for your interest in Spava!';
